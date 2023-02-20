@@ -3,7 +3,19 @@ guid: d0f09ffe4bfd571448fc4d0ccd2c2c33
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - CirclePrefab: {instanceID: 0}
+  - PenPointPrefab: {instanceID: 0}
+  - ratioSlider: {instanceID: 0}
+  - PenPointPosSlider: {instanceID: 0}
+  - numCircDropdown: {instanceID: 0}
+  - drawButton: {instanceID: 0}
+  - largeCircleMat: {instanceID: 0}
+  - smallCirclesMat: {instanceID: 0}
+  - largeCircleSprite: {fileID: 21300000, guid: f3a1c1494bef127408c2ab893827d599,
+      type: 3}
+  - smallCircleSprite: {fileID: 21300000, guid: 1ea3a639835c0ca43a4b9593e38435c6,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
