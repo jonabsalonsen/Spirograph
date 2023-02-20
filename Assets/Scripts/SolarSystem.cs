@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,24 +59,27 @@ public class SolarSystem : MonoBehaviour
 
         // Construct Circle hierarchy
         Circles = new GameObject[numberOfCircles];
-        Circles[0] = Instantiate(CirclePrefab);
-        Circles[0].GetComponent<Circle>().center = transform.position;
-        Circles[0].GetComponent<Circle>().angleIncrement = angleIncr;
-        Circles[0].GetComponent<SpriteRenderer>().material = largeCircleMat;
-        Circles[0].GetComponent<SpriteRenderer>().sprite = largeCircleSprite;
-        Circles[0].GetComponent<SpriteRenderer>().sortingLayerName = "Sun";
+        
+        Circles[0]= Instantiate(CirclePrefab);
+        GameObject first = Circles[0];
+        first.GetComponent<Circle>().center = transform.position;
+        first.GetComponent<Circle>().angleIncrement = angleIncr;
+        first.GetComponent<SpriteRenderer>().material = largeCircleMat;
+        first.GetComponent<SpriteRenderer>().sprite = largeCircleSprite;
+        first.GetComponent<SpriteRenderer>().sortingLayerName = "Sun";
 
         indexOfLastCircle = numberOfCircles - 1;
 
         for (int i = 1; i < numberOfCircles; i++)
-        {
+        {   
             Circles[i] = Instantiate(CirclePrefab);
-            Circles[i].transform.SetParent(Circles[i - 1].transform, false);
-            Circles[i].GetComponent<SpriteRenderer>().material = smallCirclesMat;
-            Circles[i].GetComponent<SpriteRenderer>().sprite = smallCircleSprite;
-            Circles[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-            float sign = Mathf.Pow(-1, i);
-            Circles[i].GetComponent<Circle>().angleIncrement = sign * (angleIncr / Mathf.Pow(smallerCircleRadiusRatio, i));
+            GameObject current = Circles[i];
+            current.transform.SetParent(Circles[i - 1].transform, false);
+            current.GetComponent<SpriteRenderer>().material = smallCirclesMat;
+            current.GetComponent<SpriteRenderer>().sprite = smallCircleSprite;
+            current.GetComponent<SpriteRenderer>().sortingOrder = i;
+            float sign = 1 - (i % 2) * 2; // Mathf.Pow(-1, i);
+            current.GetComponent<Circle>().angleIncrement = sign * (angleIncr / Mathf.Pow(smallerCircleRadiusRatio, i));
         }
         for (int i = 1; i < numberOfCircles; i++)
         {
@@ -150,23 +153,16 @@ public class SolarSystem : MonoBehaviour
             int batchSizeDelta = Mathf.RoundToInt(Mathf.Sqrt(currentIteration * 0.1f)); //Mathf.RoundToInt(Mathf.Log10(10 + currentIteration));
             batchSize = (batchSizeMin + batchSizeDelta < batchSizeMax ? batchSizeMin + batchSizeDelta : batchSizeMax);
             
-            
             yield return new WaitForSeconds(0.04f);
         }
         
-        if (drawing)
-        {
-            ToggleSpritesVisible(false);
-        }
-        
-        
+        ToggleSpritesVisible(!drawing);
     }
 
     void ToggleSpritesVisible(bool condition)
     {
         for (int i = 1; i < Circles.Length; i++)
         {
-            print(i);
             Circles[i].GetComponent<SpriteRenderer>().enabled = condition;
         }
         penPoint.GetComponent<PenPoint>().SpriteVisible(condition);
@@ -175,18 +171,10 @@ public class SolarSystem : MonoBehaviour
     public void OnNumberOfCirclesValueChanged()
     {
         int index = numCircDropdown.value + 2;
-        print(numCircDropdown.value);
-            for (int i = 0; i < Circles.Length; i++)
-            {
-                if (i < index)
-                {
-                    Circles[i].SetActive(true);
-                }
-                else
-                {
-                    Circles[i].SetActive(false);
-                }
-            }
+        for (int i = 0; i < Circles.Length; i++)
+        {
+            Circles[i].SetActive(i < index);
+        }
         penPoint.transform.SetParent(Circles[index-1].transform, false);
         indexOfLastCircle = index - 1;
         SetPenPointPosition();
